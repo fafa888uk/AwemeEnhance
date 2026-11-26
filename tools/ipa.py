@@ -41,6 +41,8 @@ def validate_members(archive):
         raise IPAError("archive contains too many members")
     for info in members:
         name = info.filename
+        if getattr(info, "orig_filename", name) != name or "\0" in getattr(info, "orig_filename", name):
+            raise IPAError("ambiguous or NUL-truncated archive path")
         path = PurePosixPath(name)
         if not name or "\0" in name or "\\" in name or ":" in name or path.is_absolute() or any(p in ("", ".", "..") for p in name.rstrip("/").split("/")):
             raise IPAError("unsafe archive path")

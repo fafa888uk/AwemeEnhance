@@ -75,6 +75,7 @@ jobs:
           OUTPUT_IPA_S3_URI: ${{ secrets.OUTPUT_IPA_S3_URI }}
           IPA_VERSION: ${{ inputs.version }}
         run: |
+          : "${OUTPUT_IPA_S3_URI:?Private output destination must be configured}"
           python3 tools/private_storage.py put --uri-env OUTPUT_IPA_S3_URI --file "$PRIVATE_DIR/AwemeEnhance_$IPA_VERSION.ipa" --authorize-existing-storage-cost
           export OUTPUT_REPORT_S3_URI="$OUTPUT_IPA_S3_URI.report.json"
           export OUTPUT_SHA_S3_URI="$OUTPUT_IPA_S3_URI.SHA256SUMS.txt"

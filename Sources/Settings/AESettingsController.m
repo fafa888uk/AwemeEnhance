@@ -175,7 +175,8 @@ static NSDictionary *Action(NSString *title,NSString *action) { return @{@"title
         NSNumber *size; [url getResourceValue:&size forKey:NSURLFileSizeKey error:nil];
         if (size.unsignedLongLongValue>65536) { [self message:@"导入失败" body:@"配置文件超过64 KiB。"]; return; }
         NSData *data=[NSData dataWithContentsOfURL:url]; id object=data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
-        [self message:[AEConfig.shared importConfiguration:object]?@"导入成功":@"导入失败" body:@"导入不会包含或开启火花授权；实验适配器变更需重启。"]; return;
+        BOOL imported=[object isKindOfClass:NSDictionary.class] && [AEConfig.shared importConfiguration:object];
+        [self message:imported?@"导入成功":@"导入失败" body:@"导入不会包含或开启火花授权；实验适配器变更需重启。"]; return;
     }
     UIAlertController *a=[UIAlertController alertControllerWithTitle:@"原片保存权限" message:@"仅当此文件是你有权保存的原片时继续。此操作不会移除已有水印，也不会绕过作者保存限制。" preferredStyle:UIAlertControllerStyleAlert];
     [a addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];

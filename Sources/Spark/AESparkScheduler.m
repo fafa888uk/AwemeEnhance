@@ -54,7 +54,7 @@
                         UNNotificationRequest *r=[UNNotificationRequest requestWithIdentifier:identifier content:content trigger:[UNCalendarNotificationTrigger triggerWithDateMatchingComponents:d repeats:YES]];
                         [center addNotificationRequest:r withCompletionHandler:^(NSError *error) {
                             if (error) [AELog record:AEEventReminderFailure module:@"spark"];
-                            dispatch_async(dispatch_get_main_queue(), ^{ if (generation!=self.generation || ![self authorized]) [center removePendingNotificationRequestsWithIdentifiers:@[identifier]]; });
+                            dispatch_async(dispatch_get_main_queue(), ^{ if (generation!=self.generation || ![self authorized]) [UNUserNotificationCenter.currentNotificationCenter removePendingNotificationRequestsWithIdentifiers:@[identifier]]; });
                         }];
                     }
                 });

@@ -6,7 +6,7 @@
 
 | 检查 | 环境 | 实际结果 |
 |---|---|---|
-| Python unittest | 本机Windows，Python3.12.14 | 34项通过 |
+| Python unittest | 本机Windows，Python3.12.14 | 初始34项，新增NUL路径和未支持Mach-O拒绝用例后36项通过 |
 | 完整打包管线 | 自制不可运行合成Mach-O / ZIP fixture | 通过注入、去签名、重封装、CRC及SHA256回归；**不是抖音IPA** |
 | Archive安全边界 | 同上 | 路径穿越、大小写冲突、软链接、重复注入、错误版本/应用、加密、架构、依赖、哈希/覆盖等拒绝用例通过 |
 | S3私有与费用门控 | mock，不访问AWS | 5项通过；未授权费用时零云调用 |
@@ -19,7 +19,7 @@
 ## 编译与IPA真实状态
 
 - 本机无make、clang、Theos、Xcode或iOS SDK；`tools/environment.py --require-ios`实际返回失败，未生成假dylib。
-- [初次macOS Build](https://github.com/fafa888uk/AwemeEnhance/actions/runs/45856576193) 已真实提交至标准 `macos-latest`，当前仍待Runner调度或后续日志。**未取得编译成功证据，不标通过。** 最新状态以Actions页面和后续记录为准。
+- [macOS Build](https://github.com/fafa888uk/AwemeEnhance/actions/runs/45857910167) 已在标准 `macos-latest`（macOS26 arm64 / Xcode26.6）实际执行。Python/C/Foundation配置测试通过，静态分析发现一个JSON空值检查警告并已修复；Theos编译遇到通知completion捕获center的ARC循环警告升级错误，已修复并重跑。**尚未取得完整编译成功证据，不标通过。** 最新状态以Actions页面和后续记录为准。
 - 初版Build IPA工作流在GitHub校验阶段失败，已查明job-level环境不能引用runner上下文，改为step写入GITHUB_ENV，并增加actionlint防回归。
 - 未提供合法可修改的目标IPA；本机常见下载目录未找到对应抖音文件。未下载未知来源IPA。
 - 未调用S3或创建任何云资源，私有存储尚未配置验证。
@@ -36,5 +36,8 @@
 3. 画质排序改为单一最佳候选前移，避免“未知条目返回相等”的非传递比较器，保留全部降级相对顺序。
 4. 默认配置改为一次性不可变字典，减少每次视频/视图Hook重复构建开销。
 5. Build IPA先校验SHA输入再取凭据；只有默认分支、明确修改权及独立费用授权才能访问私有存储。
+
+6. macOS实际编译修复NSCAssert宏参数中的字典逗号；通知completion改为访问系统单例而非强捕获center；配置导入增加JSON对象非空类型检查。
+7. 增加NUL路径和未支持Mach-O格式的fail-closed用例；CI shellcheck要求明确声明外部私有输出URI，已修复。
 
 以上均为实际代码/检查记录，不是系统安全认证。

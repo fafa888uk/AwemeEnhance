@@ -109,6 +109,7 @@ class ArchiveTests(unittest.TestCase):
         with zipfile.ZipFile(data) as archive:
             # Python on Windows normalizes backslashes during ZIP creation; model a hostile raw entry.
             archive.infolist()[0].filename = name
+            archive.infolist()[0].orig_filename = name
             ipa.validate_members(archive)
 
     def test_traversal_rejected(self):
@@ -135,6 +136,10 @@ class ArchiveTests(unittest.TestCase):
 
     def test_regular_member(self):
         self.check_name("Payload/A.app/Info.plist")
+
+    def test_nul_filename_rejected(self):
+        with self.assertRaises(ipa.IPAError):
+            self.check_name("Payload/name\0hidden")
 
 
 class IntegrationTests(unittest.TestCase):
@@ -208,6 +213,10 @@ class IntegrationTests(unittest.TestCase):
     def test_plugin_architecture_mismatch_rejected(self):
         data = bytearray(thin(filetype=6)); struct.pack_into("<I", data, 8, 2); self.plugin.write_bytes(data)
         with self.assertRaisesRegex(ipa.IPAError, "architecture"): self.run_build()
+
+    def test_unsupported_embedded_macho_rejected(self):
+        fixture(self.source, extra={"Payload/Fixture.app/unsupported": b"\xce\xfa\xed\xfe" + bytes(64)})
+        with self.assertRaises(macho.MachOError): self.run_build()
 
 
 if __name__ == "__main__":

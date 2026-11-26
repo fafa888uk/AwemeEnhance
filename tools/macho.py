@@ -109,7 +109,10 @@ def inspect(data: bytes | bytearray):
 
 
 def is_macho(data):
-    return data[:4] in (b"\xcf\xfa\xed\xfe", b"\xca\xfe\xba\xbe", b"\xca\xfe\xba\xbf")
+    # Detect unsupported variants too, so callers reject rather than silently skip them.
+    return data[:4] in (b"\xcf\xfa\xed\xfe", b"\xca\xfe\xba\xbe", b"\xca\xfe\xba\xbf",
+                       b"\xce\xfa\xed\xfe", b"\xfe\xed\xfa\xce", b"\xfe\xed\xfa\xcf",
+                       b"\xbe\xba\xfe\xca", b"\xbf\xba\xfe\xca")
 
 
 def remove_signatures(data: bytes) -> bytes:
