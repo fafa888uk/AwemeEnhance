@@ -1,0 +1,37 @@
+name: Release
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: macos-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Validate SemVer tag against VERSION
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          python3 -c 'import os,pathlib,re; t=os.environ["TAG"]; assert re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+",t); assert t[1:]==pathlib.Path("VERSION").read_text().strip()'
+      - run: bash scripts/bootstrap-theos.sh
+      - run: bash scripts/build.sh
+      - name: Publish original plugin only (pre-release until device validation)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          python3 tools/release.py --verify
+          command -v gh >/dev/null
+          gh release create "$TAG" --verify-tag --prerelease --generate-notes --notes-file CHANGELOG.md dist/AwemeEnhance.dylib dist/AwemeEnhance.deb dist/SHA256SUMS.txt dist/BUILD-METADATA.json dist/CHANGELOG.md

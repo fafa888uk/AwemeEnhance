@@ -1,0 +1,26 @@
+name: Bug report / 问题报告
+description: Report a reproducible issue without private account or chat data
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: iOS / 抖音 / 插件版本及安装方式
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 最小复现、实际与预期结果
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 已脱敏的模块事件码或崩溃栈（不要上传 IPA、账号、聊天、Token 或 Cookie）
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 隐私检查
+      options:
+        - label: 已移除账号、聊天内容、认证信息及第三方 IPA
+          required: true

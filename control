@@ -1,0 +1,10 @@
+Package: io.github.awemeenhance
+Name: AwemeEnhance
+Version: 0.1.0
+Architecture: iphoneos-arm64
+Description: Original modular enhancements; experimental host adapters
+Maintainer: AwemeEnhance contributors
+Author: AwemeEnhance contributors
+Section: Tweaks
+Depends: firmware (>= 15.0)
+Homepage: https://github.com/fafa888uk/AwemeEnhance
