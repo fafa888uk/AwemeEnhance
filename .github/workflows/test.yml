@@ -20,5 +20,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python tools/audit.py
+      - name: Check workflow expressions, contexts and shell scripts
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7 -color
       - run: python -m unittest discover -s Tests -v
       - run: bash scripts/native-tests.sh

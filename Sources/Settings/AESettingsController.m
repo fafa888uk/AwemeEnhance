@@ -195,7 +195,7 @@ static NSDictionary *Action(NSString *title,NSString *action) { return @{@"title
     if (g.state!=UIGestureRecognizerStateBegan) return;
     UIViewController *top=g.view.window.rootViewController; if (!top && [g.view isKindOfClass:UIWindow.class]) top=((UIWindow *)g.view).rootViewController;
     while (top.presentedViewController) top=top.presentedViewController;
-    if (!top || [top isKindOfClass:UINavigationController.class] && [((UINavigationController *)top).topViewController isKindOfClass:AESettingsController.class]) return;
+    if (!top || ([top isKindOfClass:UINavigationController.class] && [((UINavigationController *)top).topViewController isKindOfClass:AESettingsController.class])) return;
     UINavigationController *nav=[[UINavigationController alloc] initWithRootViewController:[AESettingsController new]]; [top presentViewController:nav animated:YES completion:nil];
 }
 @end

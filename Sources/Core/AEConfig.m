@@ -8,13 +8,15 @@ NSNotificationName const AEConfigChanged = @"io.github.awemeenhance.config.chang
 @implementation AEConfig
 + (instancetype)shared { static AEConfig *s; static dispatch_once_t once; dispatch_once(&once, ^{ s = [self new]; }); return s; }
 + (NSDictionary *)defaults {
-    return @{@"enabled":@NO, @"experimentalAdapters":@NO, @"filterAds":@NO,
+    static NSDictionary *defaults; static dispatch_once_t once;
+    dispatch_once(&once, ^{ defaults = @{@"enabled":@NO, @"experimentalAdapters":@NO, @"filterAds":@NO,
              @"filterLive":@NO, @"filterKeywords":@NO, @"keywords":@[],
              @"highestQuality":@NO, @"customSpeed":@NO, @"rate":@1.0,
              @"progress":@NO, @"hideTop":@NO, @"hideBottom":@NO,
              @"hideButtons":@NO, @"hiddenButtons":@[@"分享",@"合拍"],
              @"customOpacity":@NO, @"opacity":@1.0, @"saveOriginal":@NO,
-             @"sparkEnabled":@NO, @"sparkConsent":@NO};
+             @"sparkEnabled":@NO, @"sparkConsent":@NO}; });
+    return defaults;
 }
 - (instancetype)init {
     if ((self = [super init])) { _store = [[NSUserDefaults alloc] initWithSuiteName:@"io.github.awemeenhance.settings"]; [_store registerDefaults:self.class.defaults]; }
