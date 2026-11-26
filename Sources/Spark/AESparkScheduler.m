@@ -39,9 +39,11 @@
     UNUserNotificationCenter *center=UNUserNotificationCenter.currentNotificationCenter;
     [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> *requests) {
         NSMutableArray *ids=[NSMutableArray array]; for (UNNotificationRequest *r in requests) if ([r.identifier hasPrefix:@"ae.spark."]) [ids addObject:r.identifier];
-        [center removePendingNotificationRequestsWithIdentifiers:ids];
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (generation!=self.generation || ![self authorized]) return;
+            // A stale reconciliation must not cancel a newer generation's reminders.
+            if (generation!=self.generation) return;
+            [center removePendingNotificationRequestsWithIdentifiers:ids];
+            if (![self authorized]) return;
             [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings *settings) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (generation!=self.generation || ![self authorized]) return;

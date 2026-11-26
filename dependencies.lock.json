@@ -6,6 +6,7 @@
     {"repository": "huami1314/DYYY", "sha": "9f356609cfe66a47a9c03388dfe2e5b64f9e0726", "integrated": false},
     {"repository": "xiaoleGun/DouYinPlus", "sha": "9913ccd9a61545afbade4193b4e682573b4f7c06", "integrated": false},
     {"repository": "cong120/douyin-auto-fire", "sha": "a517c41d89b4db6763affd47a82ea43052198916", "integrated": false},
-    {"repository": "Xiaowu-0916/douyin-spark", "sha": "02f8485013a95c1b2ae884920b2f14889b273926", "integrated": false}
+    {"repository": "Xiaowu-0916/douyin-spark", "sha": "02f8485013a95c1b2ae884920b2f14889b273926", "integrated": false},
+    {"repository": "2061360308/DouYinSparkFlow", "sha": "81f3daa0d3f2d5d947dfbae3f6cebc2f6d657ca8", "integrated": false}
   ]
 }
