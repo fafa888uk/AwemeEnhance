@@ -99,7 +99,8 @@ static NSDictionary *Action(NSString *title,NSString *action) { return @{@"title
     NSArray *names=@[@"自选好友别名（不自动查找账号）",@"自定义消息 / 表情",@"HH:mm，24小时制"];
     for (NSUInteger i=0;i<3;i++) [a addTextFieldWithConfigurationHandler:^(UITextField *f){ f.placeholder=names[i]; f.text=values[i]; }];
     [a addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    for (NSNumber *enable in @[@NO,@YES]) [a addAction:[UIAlertAction actionWithTitle:enable.boolValue?@"保存并启用此好友":@"保存为关闭" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction *action){
+    for (NSNumber *enable in @[@NO,@YES]) {
+      [a addAction:[UIAlertAction actionWithTitle:enable.boolValue?@"保存并启用此好友":@"保存为关闭" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction *action){
         NSString *time=a.textFields[2].text ?: @"";
         NSRegularExpression *re=[NSRegularExpression regularExpressionWithPattern:@"^([01][0-9]|2[0-3]):[0-5][0-9]$" options:0 error:nil];
         if (![re firstMatchInString:time options:0 range:NSMakeRange(0,time.length)]) { [self message:@"时间无效" body:@"请输入 HH:mm。"]; return; }
@@ -107,7 +108,9 @@ static NSDictionary *Action(NSString *title,NSString *action) { return @{@"title
         NSDictionary *f=@{@"id":old[@"id"] ?: NSUUID.UUID.UUIDString,@"alias":[a.textFields[0].text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet] ?: @"",@"message":a.textFields[1].text ?: @"",@"minute":@([parts[0] integerValue]*60+[parts[1] integerValue]),@"timezone":old[@"timezone"] ?: NSTimeZone.localTimeZone.name,@"enabled":enable};
         if (![AESparkStore.shared saveFriend:f]) [self message:@"未保存" body:@"别名重复、超过32位好友、字段无效或本地存储不可用。"];
         [AESparkScheduler.shared reconcile]; [self reload];
-    }]]; [self presentViewController:a animated:YES completion:nil];
+      }]];
+    }
+    [self presentViewController:a animated:YES completion:nil];
 }
 - (void)prepare:(NSDictionary *)f {
     UIAlertController *a=[UIAlertController alertControllerWithTitle:f[@"alias"] message:f[@"message"] preferredStyle:UIAlertControllerStyleAlert];
