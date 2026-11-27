@@ -12,7 +12,7 @@ cp .theos/obj/AwemeEnhance.dylib dist/AwemeEnhance.dylib
 debs=(packages/*.deb)
 [[ ${#debs[@]} -eq 1 && -f "${debs[0]}" ]]
 cp "${debs[0]}" dist/AwemeEnhance.deb
-xcrun lipo -verify_arch arm64 dist/AwemeEnhance.dylib
+xcrun lipo dist/AwemeEnhance.dylib -verify_arch arm64
 codesign --verify --strict dist/AwemeEnhance.dylib
 python3 tools/release.py --collect
 python3 tools/release.py --verify
